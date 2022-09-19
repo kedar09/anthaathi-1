@@ -6,23 +6,40 @@ import {Button, Divider} from 'react-native-paper';
 import {CoreComponentType} from '../../../../types/common';
 import CMSBottomSheet from '../CMSBottomSheet';
 import {useIntl} from 'react-intl';
+import {FormField} from '../../../../components/RenderForm';
+import {useFormValue} from '../../../../utils/useFormValue';
 
-const DatePicker = (props: {title: string}) => {
+export interface DatePickerProps {
+  title?: string;
+}
+
+const DatePicker = (props: FormField & DatePickerProps) => {
   const intl = useIntl();
   const [open, setOpen] = React.useState(false);
-  const [date, setDate] = React.useState(new Date());
+  const [value, setValue] = useFormValue<Date>(props.id);
 
   const formatDate = (dateData: Date) => {
-    return `${dateData.getDate()}/${
-      dateData.getMonth() + 1
-    }/${dateData.getFullYear()}`;
+    if (dateData) {
+      return `${dateData.getDate()}/${
+        dateData.getMonth() + 1
+      }/${dateData.getFullYear()}`;
+    } else {
+      setValue(new Date());
+      let dateData = new Date();
+      return `${dateData.getDate()}/${
+        dateData.getMonth() + 1
+      }/${dateData.getFullYear()}`;
+ 
+    }
   };
 
   return (
     <View testID="datePicker" style={{marginHorizontal: 10, marginVertical: 5}}>
-      <Text style={{color: '#364A15', fontSize: 16, fontWeight: '600'}}>
-        {props.title}
-      </Text>
+      {props.title && (
+        <Text style={{color: '#364A15', fontSize: 16, fontWeight: '600'}}>
+          {props.title}
+        </Text>
+      )}
 
       <Button
         style={{
@@ -40,7 +57,7 @@ const DatePicker = (props: {title: string}) => {
         onPress={() => setOpen(true)}
         uppercase={false}
         mode="outlined">
-        {formatDate(date)}
+        {formatDate(value)}
       </Button>
 
       {Platform.OS === 'ios' && (
@@ -58,10 +75,10 @@ const DatePicker = (props: {title: string}) => {
             <DateTimePicker
               mode="date"
               display={'spinner'}
-              value={date}
+              value={value}
               onChange={(_e, d) => {
                 const currentDate = d || new Date();
-                setDate(currentDate);
+                setValue(currentDate);
                 setOpen(false);
               }}
             />
@@ -97,10 +114,10 @@ const DatePicker = (props: {title: string}) => {
       {Platform.OS === 'android' && open && (
         <DateTimePicker
           mode="date"
-          value={date}
+          value={value}
           onChange={(_e, d) => {
             const currentDate = d || new Date();
-            setDate(currentDate);
+            setValue(currentDate);
             setOpen(false);
           }}
         />

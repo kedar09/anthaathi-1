@@ -35,6 +35,8 @@ import {ButtonCMSInput} from '../containers/Core/components/CMSButton';
 import {ProductListCMSInput} from '../containers/ProductListPage/components/ProductList';
 import {FABButtonCMSInput} from '../containers/Core/components/CMSFABButton';
 import { SelectOptionCMSInput } from '../containers/Core/components/CMSSelectOption';
+import { RadioButtonCMSInput } from '../containers/Core/components/CMSRadioButton';
+import { CheckboxCMSInput } from '../containers/Core/components/CMSCheckbox';
 
 export interface RendererProps {
   components: object & {_component: string; key: string}[];
@@ -50,6 +52,8 @@ const renderer = [
   ButtonCMSInput,
   FABButtonCMSInput,
   SelectOptionCMSInput,
+  RadioButtonCMSInput,
+  CheckboxCMSInput,
   // home page
   DeliveringSelectionCMSInput,
   BlogPostsCMSInput,

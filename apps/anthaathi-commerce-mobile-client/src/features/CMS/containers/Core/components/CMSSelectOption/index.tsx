@@ -3,7 +3,8 @@ import React, {useState} from 'react';
 import {Divider, List} from 'react-native-paper';
 import {CoreComponentType} from '../../../../types/common';
 import CMSBottomSheet from '../CMSBottomSheet';
-import {useIntl} from 'react-intl';
+import { FormField } from '../../../../components/RenderForm';
+import { useFormValue } from '../../../../utils/useFormValue';
 
 export type OptionDataProps = {
   id: number;
@@ -19,25 +20,21 @@ export interface CMSSelectOptionProps {
   optionOnPress?: (data: OptionDataProps) => void;
 }
 
-const CMSSelectOption = ({
-  title,
-  options,
-  optionOnPress,
-}: CMSSelectOptionProps) => {
-  const intl = useIntl();
+const CMSSelectOption = (props: FormField & CMSSelectOptionProps) => {
   const [selectedOption, setSelectedOption] = useState(0);
   const [isVisible, setVisible] = React.useState(false);
+  const [, setValue] = useFormValue<number>(props.id);
 
   return (
     <View style={{marginHorizontal: 10}} testID="cmsSelectOption">
       <Text style={{color: '#364A15', fontSize: 16, fontWeight: '600'}}>
-        {title}
+        {props.title}
       </Text>
       <View style={{marginVertical: 5}}>
         <ListItemData
-          title={options[selectedOption]['title']}
-          subtitle={options[selectedOption]['subtitle']}
-          leftIconName={options[selectedOption]['leftIconName']}
+          title={props.options[selectedOption]['title']}
+          subtitle={props.options[selectedOption]['subtitle']}
+          leftIconName={props.options[selectedOption]['leftIconName']}
           rightIconName={'chevron-right'}
           onPress={() => {
             setVisible(!isVisible);
@@ -45,9 +42,7 @@ const CMSSelectOption = ({
         />
       </View>
       <CMSBottomSheet
-        bottomSheetTitle={intl.formatMessage({
-          defaultMessage: 'Choose delivery location',
-        })}
+        bottomSheetTitle={props.title}
         bottomSheetIconColor="#0A2463"
         bottomSheetStyle={{
           backgroundColor: 'white',
@@ -58,15 +53,16 @@ const CMSSelectOption = ({
         setBottomSheetVisible={setVisible}
         bottomSheetVisible={isVisible}>
         <ScrollView>
-          {options &&
-            options.map((data: OptionDataProps, index: number) => (
+          {props.options &&
+            props.options.map((data: OptionDataProps, index: number) => (
               <ListItemData
                 key={index}
                 title={data.title}
                 subtitle={data.subtitle}
                 onPress={() => {
-                  optionOnPress && optionOnPress(data);
+                  props.optionOnPress && props.optionOnPress(data);
                   setSelectedOption(index);
+                  setValue(data.id);
                   setVisible(!isVisible);
                 }}
                 leftIconName={data.leftIconName}
